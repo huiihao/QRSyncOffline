@@ -1,3 +1,4 @@
+```markdown
 # QRSync_Offline
 
 <p align="center">
@@ -82,3 +83,159 @@
 ## 🔧 Technical Principles
 
 ### Data Flow
+
+```
+┌─────────────┐     Compress     ┌─────────────┐     Split      ┌─────────────┐
+│  Raw File   │ ───────────────→ │ deflate Comp│ ──────────────→ │Data Chunks  │
+└─────────────┘                  └─────────────┘                └─────────────┘
+                                                                        ↓
+┌─────────────┐     Reassemble   ┌─────────────┐    Decompress  ┌─────────────┐
+│ Complete File│ ←─────────────── │ Merged Data │ ←────────────── │QR Code Trans│
+└─────────────┘                  └─────────────┘                └─────────────┘
+```
+
+### QR Code Data Structure
+
+**Data Chunk:**
+```json
+{
+  "i": 0,           // Chunk index
+  "t": 5,           // Total number of chunks
+  "f": "ABC12",     // File fingerprint
+  "h": "a3f9b",     // CRC32 checksum
+  "d": "base64..."  // Data content
+}
+```
+
+**Filename Chunk:**
+```json
+{
+  "t": "fn",        // Type identifier
+  "f": "ABC12",     // File fingerprint
+  "n": "base64...", // Filename (Base64 encoded)
+  "s": 1024,        // File size
+  "tc": 5,          // Total number of data chunks
+  "h": "c7d2e"      // CRC32 checksum
+}
+```
+
+### Core Technologies
+
+- **Compression Algorithm**: [pako](https://github.com/nodeca/pako) (zlib/deflate)
+- **QR Code Generation**: [qrcode.js](https://github.com/davidshimjs/qrcodejs)
+- **QR Code Scanning**: [ZXing](https://github.com/zxing-js/library)
+- **Local Storage**: [localForage](https://github.com/localForage/localForage)
+- **Checksum Algorithm**: CRC32
+
+---
+
+## 💻 Local Usage
+
+### Method 1: Direct Download
+
+1. Download the project code
+2. Extract to any folder
+3. Double-click `index.html` to open the homepage
+4. Open the sender and receiver respectively to use
+
+### Method 2: Local Server
+
+```bash
+# Clone repository
+git clone https://github.com/yourusername/QRSync_Offline.git
+
+# Enter project directory
+cd QRSync_Offline
+
+# Start local server (Python 3)
+python -m http.server 8080
+
+# Or Node.js
+npx serve .
+
+# Visit http://localhost:8080 in browser
+```
+
+---
+
+## 📂 Project Structure
+
+```
+QRSync_Offline/
+├── index.html           # Homepage entry
+├── send/
+│   └── index.html       # Sender
+├── receiver/
+│   └── index.html       # Receiver
+└── README.md            # Project description
+```
+
+> This project is pure frontend implementation, with no backend dependencies. All third-party libraries are imported via CDN or prepared locally.
+
+---
+
+## ⚙️ Configuration
+
+### Chunk Size
+
+- **Range**: 400 - 1500 bytes
+- **Default**: 800 bytes
+- **Recommendation**: Smaller chunks improve scanning success rate but increase the number of QR codes
+
+### QR Code Dimensions
+
+- **Range**: 256 - 600 pixels
+- **Default**: 400 pixels
+- **Recommendation**: Adjust according to screen size and scanning distance
+
+---
+
+## 📝 Notes
+
+1. **Scanning Order**: Scan all data chunks in order, and finally scan the filename QR code
+2. **File Size**: Recommended file size is under 10MB, as large files will generate many QR codes
+3. **Screen Brightness**: Ensure the sender's screen brightness is sufficient for better scanning success
+4. **Camera Focus**: Keep an appropriate distance between the phone camera and screen to ensure QR codes are clear
+5. **Checksum Failure**: If a checksum fails, rescan that QR code
+
+---
+
+## 🔒 Privacy Statement
+
+- All data is processed locally in the browser and not uploaded to any server
+- Reception progress is stored in the browser's IndexedDB and will not leak privacy
+- Can be used offline after the page loads, ensuring data security
+
+---
+
+## 🤝 Contributing
+
+Welcome to submit Issues and Pull Requests!
+
+1. Fork the repository
+2. Create your feature branch (`git checkout -b feature/AmazingFeature`)
+3. Commit your changes (`git commit -m 'Add some AmazingFeature'`)
+4. Push to the branch (`git push origin feature/AmazingFeature`)
+5. Open a Pull Request
+
+---
+
+## 📄 License
+
+This project is open source under the [MIT](LICENSE) license.
+
+---
+
+## 🙏 Acknowledgments
+
+- [pako](https://github.com/nodeca/pako) - Fast zlib compression library
+- [qrcode.js](https://github.com/davidshimjs/qrcodejs) - QR code generation library
+- [ZXing](https://github.com/zxing-js/library) - QR code scanning library
+- [localForage](https://github.com/localForage/localForage) - Local storage library
+
+---
+
+<p align="center">
+  Made with ❤️ by QRSync_Offline Team
+</p>
+```
