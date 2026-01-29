@@ -1,10 +1,15 @@
 # QRSync_Offline
+<p align="center">
+  <a href="README.md">简体中文</a> • <a href="README_EN.md">English</a>
+</p>
 
 <p align="center">
-  <img src="https://img.shields.io/badge/纯浏览器-实现-brightgreen" alt="纯浏览器实现">
-  <img src="https://img.shields.io/badge/完全离线-工作-blue" alt="完全离线工作">
-  <img src="https://img.shields.io/badge/中文-支持-orange" alt="中文支持">
-  <img src="https://img.shields.io/badge/license-MIT-green" alt="License">
+  <img src="https://img.shields.io/badge/Pure%20Browser-Implementation-brightgreen" alt="纯浏览器实现">
+  <img src="https://img.shields.io/badge/Fully%20Offline-Working-blue" alt="完全离线工作">
+  <img src="https://img.shields.io/badge/Chinese-Supported-orange" alt="中文支持">
+  <img src="https://img.shields.io/badge/English-Supported-blueviolet" alt="英文支持">
+  <img src="https://img.shields.io/badge/License-MIT-green" alt="License">
+  <img src="https://img.shields.io/github/stars/huiihao/QRSync_Offline?style=social" alt="GitHub Stars">
 </p>
 
 <p align="center">
@@ -25,7 +30,7 @@
 
 **👉 [点击访问 QRSync_Offline](https://huiihao.github.io/QRSync_Offline/)**
 
-> 页面加载完成后，即可断开网络离线使用。
+> 下载本仓库压缩包，页面加载JavaScript完成后，即可断开网络离线使用。
 
 ---
 
@@ -34,13 +39,13 @@
 | 特性 | 说明 |
 |------|------|
 | 🌐 **纯浏览器实现** | 无需安装任何软件，无需服务器支持 |
-| 📶 **完全离线工作** | 页面加载后即可断开网络使用 |
+| 📶 **完全离线工作** | 可完全断开网络进行使用 |
 | 🔒 **数据完整性校验** | 使用 CRC32 校验确保数据传输准确无误 |
 | 📁 **支持任意文件类型** | 文本、图片、文档、压缩包等均可传输 |
 | 🇨🇳 **完美中文支持** | 支持中文文件名，无乱码问题 |
 | 💾 **断点续传** | 自动保存接收进度，刷新页面不丢失 |
 | 📱 **移动端适配** | 针对手机扫描场景优化 |
-| 🎨 **精美界面** | Apple 风格设计，简洁优雅 |
+| 🎨 **精美界面** | 简约风格设计，简洁优雅 |
 
 ---
 
@@ -163,7 +168,7 @@ QRSync_Offline/
 └── README.md            # 项目说明
 ```
 
-> 本项目为纯前端实现，无后端依赖，所有第三方库均通过 CDN 引入。
+> 本项目为纯前端实现，无后端依赖，所有第三方库均通过 CDN 引入或者本地准备。
 
 ---
 
