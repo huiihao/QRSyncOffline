@@ -1,5 +1,4 @@
-```markdown
-# QRSync_Offline
+# QRSyncOffline
 
 <p align="center">
   <a href="README.md">简体中文</a> • <a href="README_EN.md">English</a>
@@ -11,11 +10,11 @@
   <img src="https://img.shields.io/badge/Chinese-Supported-orange" alt="Chinese Supported">
   <img src="https://img.shields.io/badge/English-Supported-blueviolet" alt="English Supported">
   <img src="https://img.shields.io/badge/License-MIT-green" alt="License">
-  <img src="https://img.shields.io/github/stars/huiihao/QRSync_Offline?style=social" alt="GitHub Stars">
+  <img src="https://img.shields.io/github/stars/huiihao/QRSyncOffline?style=social" alt="GitHub Stars">
 </p>
 
 <p align="center">
-  <b>QRSync_Offline</b> is a pure browser-based, fully offline file transfer tool that transmits files via QR code sequences without requiring a network connection.
+  <b>QRSyncOffline</b> is a pure browser-based, fully offline file transfer tool that transmits files via QR code sequences without requiring a network connection.
 </p>
 
 <p align="center">
@@ -30,7 +29,7 @@
 
 ## 🌐 Online Demo
 
-**👉 [Click to visit QRSync_Offline](https://huiihao.github.io/QRSync_Offline/)**
+**👉 [Click to visit QRSyncOffline](https://huiihao.github.io/QRSyncOffline/)**
 
 > Download the repository archive. Once the page finishes loading JavaScript, you can disconnect from the network and use it offline.
 
@@ -55,7 +54,7 @@
 
 ### Sending Files
 
-1. Open the **[Sender](https://huiihao.github.io/QRSync_Offline/send/index.html)**
+1. Open the **[Sender](https://huiihao.github.io/QRSyncOffline/send/index.html)**
 2. Click or drag to select the file to transfer
 3. Adjust chunk size and QR code dimensions (optional)
 4. Click the "Generate QR Codes" button
@@ -67,7 +66,7 @@
 
 ### Receiving Files
 
-1. Open the **[Receiver](https://huiihao.github.io/QRSync_Offline/receiver/index.html)**
+1. Open the **[Receiver](https://huiihao.github.io/QRSyncOffline/receiver/index.html)**
 2. Click the "Start Scanning" button and allow camera permissions
 3. Scan all data QR codes in sequence
 4. Finally scan the filename QR code (orange border)
@@ -142,10 +141,10 @@
 
 ```bash
 # Clone repository
-git clone https://github.com/yourusername/QRSync_Offline.git
+git clone https://github.com/yourusername/QRSyncOffline.git
 
 # Enter project directory
-cd QRSync_Offline
+cd QRSyncOffline
 
 # Start local server (Python 3)
 python -m http.server 8080
@@ -161,7 +160,7 @@ npx serve .
 ## 📂 Project Structure
 
 ```
-QRSync_Offline/
+QRSyncOffline/
 ├── index.html           # Homepage entry
 ├── send/
 │   └── index.html       # Sender
@@ -236,6 +235,5 @@ This project is open source under the [MIT](LICENSE) license.
 ---
 
 <p align="center">
-  Made with ❤️ by QRSync_Offline Team
+  Made with ❤️ by QRSyncOffline Team
 </p>
-```
