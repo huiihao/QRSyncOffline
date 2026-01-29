@@ -179,14 +179,23 @@
         }
         
         /* Scan Window - Mobile Optimized like reference */
+        /* 手机端：保持全宽 */
         .scan-window {
             width: 100%;
             background: #000;
             position: relative;
-            padding-top: 100%; /* 1:1 Aspect Ratio */
+            padding-top: 100%;
             border-radius: 16px;
             overflow: hidden;
-            margin-bottom: 20px;
+            margin: 0 auto 16px;
+        }
+        
+        /* 电脑端：限制大小 */
+        @media (min-width: 768px) {
+            .scan-window {
+                max-width: 360px;      /* 可调整：300px-400px之间 */
+                padding-top: 360px;    /* 保持正方形，与max-width相同 */
+            }
         }
         
         .video-container {
