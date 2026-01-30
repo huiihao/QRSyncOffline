@@ -411,8 +411,8 @@
         }
         
         .image-scan-frame {
-            width: 70%;
-            height: 70%;
+            width: 100%;
+            height: 100%;
             border: 3px solid var(--accent);
             border-radius: 20px;
             position: relative;
@@ -1207,7 +1207,7 @@
                 const height = canvas.height;
                 
                 // 计算扫描框区域（70%中心区域，与CSS .image-scan-frame 70%一致）
-                const scanAreaRatio = 0.70;
+                const scanAreaRatio = 1.00;
                 const startX = (width * (1 - scanAreaRatio)) / 2;
                 const startY = (height * (1 - scanAreaRatio)) / 2;
                 const scanWidth = width * scanAreaRatio;
