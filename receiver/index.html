@@ -866,33 +866,6 @@
             }
         }
         
-        // ==================== Base64 清洗工具函数 ====================
-        function cleanBase64Data(data) {
-            if (typeof data !== 'string') {
-                data = String(data);
-            }
-            // 1. 移除所有非 Base64 字符（保留标准 Base64 字符：A-Z, a-z, 0-9, +, /, =, 以及 URL-safe 的 -, _）
-            let cleaned = data.replace(/[^A-Za-z0-9+/=_-]/g, '');
-            
-            // 2. 转换 URL-safe Base64 到标准 Base64
-            cleaned = cleaned.replace(/-/g, '+').replace(/_/g, '/');
-            
-            // 3. 修复 padding：Base64 字符串长度必须是 4 的倍数
-            const padLength = (4 - (cleaned.length % 4)) % 4;
-            cleaned += '='.repeat(padLength);
-            
-            return cleaned;
-        }
-        
-        function validateBase64(data) {
-            try {
-                atob(data);
-                return true;
-            } catch (e) {
-                return false;
-            }
-        }
-        
         // ==================== Init ====================
         document.addEventListener('DOMContentLoaded', async () => {
             const isMac = navigator.platform.includes('Mac');
@@ -1092,12 +1065,7 @@
                         showFloatingMessage('⚠️ 不属于当前文件', true);
                         return;
                     }
-                    
-                    // 清洗 Base64 数据
-                    const cleanData = cleanBase64Data(chunk.d);
-                    
-                    // 验证 CRC32
-                    if (calculateCRC32(cleanData) !== chunk.h.toLowerCase()) {
+                    if (calculateCRC32(chunk.d) !== chunk.h.toLowerCase()) {
                         showFloatingMessage(`❌ 分片 ${chunk.i+1} 校验失败`, true);
                         return;
                     }
@@ -1106,9 +1074,7 @@
                         return;
                     }
                     if (!fileInfo) fileInfo = { fingerprint: chunk.f, totalChunks: chunk.t, filename: '未知文件', size: 0 };
-                    
-                    // 存储清洗后的数据
-                    receivedChunks.set(chunk.i, cleanData);
+                    receivedChunks.set(chunk.i, chunk.d);
                     await saveProgress();
                     updateStatus();
                     showFloatingMessage(`✅ 分片 ${chunk.i + 1}/${chunk.t}`);
@@ -1401,13 +1367,7 @@
                 const fn = await store.getItem('filename');
                 if (info) {
                     fileInfo = info;
-                    // 重新清洗加载的数据
-                    receivedChunks = new Map();
-                    if (chunks) {
-                        for (const [key, value] of chunks) {
-                            receivedChunks.set(key, cleanBase64Data(value));
-                        }
-                    }
+                    receivedChunks = new Map(chunks || []);
                     currentFileFingerprint = fp || info.fingerprint;
                     receivedFileName = fn || info.filename;
                     document.getElementById('fingerprint-display').style.display = 'block';
@@ -1418,73 +1378,29 @@
             } catch (err) { console.error('加载失败:', err); }
         }
         
-        // ==================== 修复：重组文件时的 Base64 解码 ====================
         async function reassembleFile() {
             if (!fileInfo || receivedChunks.size < fileInfo.totalChunks) return;
-            
             try {
                 document.getElementById('btn-reassemble').disabled = true;
                 document.getElementById('btn-reassemble').textContent = '⏳ 重组中...';
-                
-                // 按顺序收集并验证所有分片
                 const sorted = [];
                 for (let i = 0; i < fileInfo.totalChunks; i++) {
                     const data = receivedChunks.get(i);
                     if (!data) throw new Error(`缺少分片 ${i + 1}`);
-                    
-                    // 再次清洗确保数据干净
-                    const cleanData = cleanBase64Data(data);
-                    
-                    // 验证每个分片的 Base64 有效性
-                    if (!validateBase64(cleanData)) {
-                        console.error(`分片 ${i+1} 数据预览:`, data.substring(0, 50));
-                        throw new Error(`分片 ${i + 1} Base64 格式无效`);
-                    }
-                    
-                    sorted.push(cleanData);
+                    sorted.push(data);
                 }
-                
-                // 拼接完整的 Base64 字符串
                 const combinedBase64 = sorted.join('');
-                
-                // 验证整体 Base64
-                if (!validateBase64(combinedBase64)) {
-                    throw new Error('合并后的数据 Base64 格式无效');
-                }
-                
-                // 解码 Base64
-                let binary;
-                try {
-                    binary = atob(combinedBase64);
-                } catch (e) {
-                    throw new Error(`Base64 解码失败: ${e.message}`);
-                }
-                
-                // 转换为 Uint8Array
+                let binary = atob(combinedBase64);
                 const bytes = new Uint8Array(binary.length);
-                for (let i = 0; i < binary.length; i++) {
-                    bytes[i] = binary.charCodeAt(i);
-                }
-                
-                // 解压数据
+                for (let i = 0; i < binary.length; i++) bytes[i] = binary.charCodeAt(i);
                 let decompressed;
-                try { 
-                    decompressed = pako.inflate(bytes); 
-                } catch (e) { 
-                    console.warn('解压失败，使用原始数据:', e);
-                    decompressed = bytes; 
-                }
-                
-                // 创建 Blob 并保存
+                try { decompressed = pako.inflate(bytes); } catch (e) { decompressed = bytes; }
                 const blob = new Blob([decompressed]);
                 const store = localforage.createInstance({ name: 'qrcode-receiver-v2' });
                 await store.setItem('fileBlob', blob);
-                
                 document.getElementById('btn-download').disabled = false;
-                showToast('✓ 重组完成，可以下载');
-                
+                showToast('✓ 重组完成');
             } catch (err) {
-                console.error('重组错误:', err);
                 showToast('重组失败: ' + err.message);
                 document.getElementById('btn-reassemble').disabled = false;
             } finally {
@@ -1496,23 +1412,15 @@
             try {
                 const store = localforage.createInstance({ name: 'qrcode-receiver-v2' });
                 const blob = await store.getItem('fileBlob');
-                if (!blob || !fileInfo) { 
-                    showToast('没有可下载的文件'); 
-                    return; 
-                }
+                if (!blob || !fileInfo) { showToast('没有可下载的文件'); return; }
                 const url = URL.createObjectURL(blob);
                 const a = document.createElement('a');
                 a.href = url;
                 a.download = fileInfo.filename;
-                document.body.appendChild(a);
                 a.click();
-                document.body.removeChild(a);
                 URL.revokeObjectURL(url);
                 showToast('⬇️ 下载已开始');
-            } catch (err) { 
-                console.error('下载错误:', err);
-                showToast('下载失败: ' + err.message); 
-            }
+            } catch (err) { showToast('下载失败: ' + err.message); }
         }
         
         function showToast(msg) {
@@ -1522,9 +1430,7 @@
             setTimeout(() => toast.classList.remove('show'), 3000);
         }
         
-        window.addEventListener('beforeunload', () => { 
-            if (isScanning) stopCamera(); 
-        });
+        window.addEventListener('beforeunload', () => { if (isScanning) stopCamera(); });
     </script>
 </body>
 </html>
