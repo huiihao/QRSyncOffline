@@ -149,7 +149,6 @@
             display: block;
         }
         
-        /* ==================== 相机扫描部分（整合自第二份代码） ==================== */
         .camera-controls {
             margin-bottom: 20px;
         }
@@ -178,7 +177,6 @@
             color: var(--text-primary);
         }
         
-        /* 扫描窗口样式 */
         .scan-section-wrapper {
             position: relative;
             margin-bottom: 20px;
@@ -268,7 +266,6 @@
         .corner.bl { bottom: -3px; left: -3px; border-width: 0 0 4px 4px; }
         .corner.br { bottom: -3px; right: -3px; border-width: 0 4px 4px 0; }
         
-        /* 关闭扫描按钮 */
         .scan-close-btn {
             position: absolute;
             top: 15px;
@@ -310,7 +307,6 @@
             margin: 3px 0;
         }
         
-        /* 浮动提示 */
         .floating-message {
             position: fixed;
             top: 50%;
@@ -346,53 +342,6 @@
             100% { opacity: 0; transform: translate(-50%, -70%); }
         }
         
-        /* 手动输入区域 */
-        .manual-input-section {
-            margin-top: 20px;
-            padding-top: 20px;
-            border-top: 1px solid rgba(0,0,0,0.1);
-        }
-        
-        .manual-input-section p {
-            color: var(--text-secondary);
-            margin-bottom: 10px;
-            font-size: 14px;
-        }
-        
-        #manual-data {
-            width: 100%;
-            height: 100px;
-            padding: 12px;
-            border-radius: 12px;
-            border: 1px solid rgba(0,0,0,0.1);
-            font-family: 'Courier New', monospace;
-            font-size: 13px;
-            margin-bottom: 12px;
-            resize: vertical;
-            background: rgba(0,0,0,0.02);
-            color: var(--text-primary);
-        }
-        
-        /* Error Panel */
-        .error-panel {
-            background: rgba(255, 59, 48, 0.1);
-            border: 1px solid rgba(255, 59, 48, 0.2);
-            border-radius: 12px;
-            padding: 16px;
-            margin-bottom: 16px;
-            display: none;
-        }
-        
-        .error-panel.active { display: block; }
-        
-        .error-title {
-            font-weight: 600;
-            color: var(--error);
-            margin-bottom: 8px;
-            font-size: 15px;
-        }
-        
-        /* Virtual Camera - Fixed Image Display */
         .upload-zone {
             border: 2px dashed rgba(0, 113, 227, 0.3);
             border-radius: 16px;
@@ -441,7 +390,6 @@
             font-size: 12px;
         }
         
-        /* Image Preview - Fixed to match image aspect ratio */
         .preview-section {
             display: none;
             margin-bottom: 24px;
@@ -467,7 +415,6 @@
             object-fit: contain;
         }
         
-        /* Scan overlay for images - matches actual image dimensions */
         .image-scan-overlay {
             position: absolute;
             top: 0;
@@ -489,7 +436,6 @@
             box-shadow: 0 0 0 9999px rgba(0, 0, 0, 0.4);
         }
         
-        /* Queue */
         .queue-section {
             margin-bottom: 24px;
         }
@@ -552,7 +498,6 @@
         
         .queue-item.completed .queue-badge { background: var(--success); }
         
-        /* Buttons */
         .btn {
             padding: 14px 28px;
             border-radius: 980px;
@@ -575,6 +520,7 @@
         .btn:disabled { opacity: 0.5; cursor: not-allowed; }
         .btn-secondary { background: rgba(0,0,0,0.08); color: var(--text-primary); }
         .btn-success { background: var(--success); }
+        .btn-danger { background: var(--error); }
         
         @media (max-width: 734px) {
             .btn { padding: 16px; font-size: 16px; }
@@ -591,7 +537,6 @@
             min-width: 140px;
         }
         
-        /* Status Bar */
         .status-bar {
             background: rgba(0,0,0,0.04);
             border-radius: 12px;
@@ -606,6 +551,19 @@
             margin-bottom: 12px;
             flex-wrap: wrap;
             gap: 8px;
+        }
+        
+        .fingerprint-display {
+            padding: 8px 12px;
+            background: rgba(0, 113, 227, 0.1);
+            border-radius: 8px;
+            margin-bottom: 12px;
+            font-family: 'Courier New', monospace;
+            font-size: 13px;
+            text-align: center;
+            border: 1px solid rgba(0, 113, 227, 0.2);
+            color: var(--text-secondary);
+            word-break: break-all;
         }
         
         .progress-bar {
@@ -643,14 +601,26 @@
             font-size: 12px;
             font-weight: 600;
             color: var(--text-secondary);
+            transition: all 0.3s;
         }
         
         .chunk-cell.filled {
             background: var(--success);
             color: white;
+            animation: chunk-pop 0.3s ease;
         }
         
-        /* Toast */
+        .chunk-cell.filename {
+            background: var(--warning);
+            color: white;
+        }
+        
+        @keyframes chunk-pop {
+            0% { transform: scale(0.8); }
+            70% { transform: scale(1.1); }
+            100% { transform: scale(1); }
+        }
+        
         .toast {
             position: fixed;
             bottom: 30px;
@@ -675,6 +645,20 @@
         }
         
         .hidden-file-input { display: none; }
+        
+        .status-message {
+            padding: 12px;
+            border-radius: 8px;
+            margin-bottom: 16px;
+            text-align: center;
+            font-size: 14px;
+            display: none;
+        }
+        
+        .status-message.show { display: block; }
+        .status-success { background: rgba(52, 199, 89, 0.1); color: var(--success); }
+        .status-error { background: rgba(255, 59, 48, 0.1); color: var(--error); }
+        .status-info { background: rgba(0, 113, 227, 0.1); color: var(--accent); }
     </style>
 </head>
 <body>
@@ -694,22 +678,23 @@
         </div>
         
         <div class="scanner-container">
-            <!-- Camera Section - Based on reference implementation -->
+            <!-- Camera Section -->
             <div id="camera-section" class="active">
-                <div class="camera-section-mobile">
+                <div class="camera-controls">
                     <div class="camera-select-row">
                         <select id="camera-select">
                             <option value="">请选择摄像头...</option>
                         </select>
                     </div>
                     
-                    <div class="error-panel" id="camera-error">
-                        <div class="error-title">⚠️ 相机启动失败</div>
-                        <div id="error-text" style="font-size: 14px; color: var(--text-secondary); margin-bottom: 12px;"></div>
-                        <button class="btn btn-secondary" onclick="initCamera()" style="width: auto; padding: 8px 16px; font-size: 14px;">重试</button>
-                    </div>
-                    
+                    <button id="btn-start" class="btn" onclick="toggleCamera()">
+                        <span id="scan-btn-text">🚀 开始扫描</span>
+                    </button>
+                </div>
+                
+                <div id="scan-section-wrapper" class="scan-section-wrapper">
                     <div class="scan-window" id="scan-window">
+                        <button class="scan-close-btn" onclick="stopCamera()">×</button>
                         <div class="video-container">
                             <video id="video" playsinline></video>
                             <div class="scan-overlay">
@@ -722,15 +707,14 @@
                             </div>
                         </div>
                     </div>
-                    
                     <div class="scan-tips">
-                        请将二维码对准框内 | 自动扫描
+                        <p>请将二维码对准框内 | ZXing 0.21.3 引擎</p>
+                        <p>先扫描数据二维码，最后扫描文件名二维码</p>
                     </div>
-                    
-                    <div class="action-buttons">
-                        <button class="btn" id="btn-start" onclick="startCamera()">🚀 开始扫描</button>
-                        <button class="btn btn-secondary" id="btn-stop" onclick="stopCamera()" disabled>⏹️ 停止</button>
-                    </div>
+                </div>
+                
+                <div id="camera-status" class="status-message status-info">
+                    等待扫描第一个二维码...
                 </div>
             </div>
             
@@ -747,7 +731,6 @@
                 
                 <input type="file" id="file-input" class="hidden-file-input" accept="image/*" multiple onchange="handleFileSelect(event)">
                 
-                <!-- Queue -->
                 <div class="queue-section" id="queue-section" style="display: none;">
                     <div class="queue-header">
                         <span style="font-weight: 600;">处理队列</span>
@@ -763,7 +746,6 @@
                     </div>
                 </div>
                 
-                <!-- Image Preview with correct aspect ratio -->
                 <div class="preview-section" id="preview-section">
                     <div class="image-preview-container" id="preview-container">
                         <canvas id="preview-canvas"></canvas>
@@ -795,6 +777,11 @@
                     <span style="font-weight: 600;" id="status-text">准备就绪</span>
                     <span id="progress-text">0%</span>
                 </div>
+                
+                <div id="fingerprint-display" class="fingerprint-display" style="display: none;">
+                    <strong>文件指纹:</strong> <span id="fingerprint-value">未设置</span>
+                </div>
+                
                 <div class="progress-bar">
                     <div class="progress-fill" id="progress-fill"></div>
                 </div>
@@ -812,6 +799,12 @@
     <div class="toast" id="toast"></div>
 
     <script>
+        // ZXing 库检查
+        if (typeof ZXing === 'undefined') {
+            console.error('ZXing 库未加载');
+            alert('错误：二维码扫描库 (ZXing) 未能加载。\n请检查 js/index.min.js 是否存在，或刷新页面重试。');
+        }
+
         // ==================== Global State ====================
         let codeReader = null;
         let scanControls = null;
@@ -820,145 +813,345 @@
         
         let receivedChunks = new Map();
         let fileInfo = null;
+        let currentFileFingerprint = null;
+        let receivedFileName = '';
         
-        // Image queue
+        let lastDecodedText = '';
+        let lastScanTime = 0;
+        
         let imageQueue = [];
         let currentImageIndex = -1;
         
+        // ==================== CRC32 ====================
+        function calculateCRC32(data) {
+            if (typeof pako !== 'undefined' && pako.crc32) {
+                const crc = pako.crc32(data);
+                return crc.toString(36).padStart(5, '0').slice(-5);
+            }
+            return calculateCRC32Fallback(data);
+        }
+
+        function calculateCRC32Fallback(data) {
+            const table = new Uint32Array(256);
+            for (let i = 0; i < 256; i++) {
+                let c = i;
+                for (let j = 0; j < 8; j++) {
+                    c = (c & 1) ? 0xEDB88320 ^ (c >>> 1) : c >>> 1;
+                }
+                table[i] = c;
+            }
+            
+            let crc = 0xFFFFFFFF;
+            for (let i = 0; i < data.length; i++) {
+                crc = (crc >>> 8) ^ table[(crc ^ data.charCodeAt(i)) & 0xFF];
+            }
+            crc = (crc ^ 0xFFFFFFFF) >>> 0;
+            return crc.toString(36).padStart(5, '0').slice(-5);
+        }
+
+        function decodeFileName(base64Name) {
+            try {
+                const binaryStr = atob(base64Name);
+                const bytes = new Uint8Array(binaryStr.length);
+                for (let i = 0; i < binaryStr.length; i++) {
+                    bytes[i] = binaryStr.charCodeAt(i);
+                }
+                return new TextDecoder('utf-8').decode(bytes);
+            } catch (e) {
+                try {
+                    return decodeURIComponent(atob(base64Name));
+                } catch (e2) {
+                    return base64Name;
+                }
+            }
+        }
+        
         // ==================== Init ====================
         document.addEventListener('DOMContentLoaded', async () => {
-            // Detect OS
             const isMac = navigator.platform.includes('Mac');
             document.getElementById('kbd-cmd').textContent = isMac ? '⌘' : 'Ctrl';
             
-            // Setup paste
             document.addEventListener('paste', handlePaste);
             
-            // Init camera list
-            await initCameraList();
+            if (typeof ZXing !== 'undefined') {
+                await initCameraList();
+            } else {
+                document.getElementById('camera-select').innerHTML = '<option value="">ZXing 库加载失败</option>';
+                document.getElementById('btn-start').disabled = true;
+                document.getElementById('scan-btn-text').textContent = '❌ 库加载失败';
+            }
             
-            // Load saved
             await loadProgress();
         });
         
-        // ==================== Camera Module (From Reference) ====================
+        // ==================== Camera ====================
         async function initCameraList() {
             try {
-                // Try to get permission first
-                await navigator.mediaDevices.getUserMedia({ video: true });
+                try {
+                    await navigator.mediaDevices.getUserMedia({ video: true });
+                } catch (permErr) {
+                    console.warn('权限获取失败，继续尝试枚举设备');
+                }
                 
-                const devices = await navigator.mediaDevices.enumerateDevices();
-                const cameras = devices.filter(d => d.kind === 'videoinput');
+                let videoInputDevices = [];
                 
+                try {
+                    if (typeof ZXing !== 'undefined' && ZXing.BrowserQRCodeReader) {
+                        videoInputDevices = await ZXing.BrowserQRCodeReader.listVideoInputDevices();
+                    }
+                } catch (zxingEnumErr) {
+                    console.warn('ZXing枚举失败，使用原生API');
+                    const devices = await navigator.mediaDevices.enumerateDevices();
+                    videoInputDevices = devices.filter(device => device.kind === 'videoinput');
+                }
+
                 const select = document.getElementById('camera-select');
                 select.innerHTML = '<option value="">请选择摄像头...</option>';
                 
-                cameras.forEach((cam, idx) => {
-                    const option = document.createElement('option');
-                    option.value = cam.deviceId;
-                    let label = cam.label || `摄像头 ${idx + 1}`;
-                    
-                    // Detect back camera
-                    if (label.toLowerCase().includes('back') || 
-                        label.toLowerCase().includes('rear') ||
-                        label.includes('后置')) {
-                        label += ' [后置]';
-                        option.selected = true;
-                    }
-                    
-                    option.text = label;
-                    select.appendChild(option);
-                });
+                if (videoInputDevices.length > 0) {
+                    videoInputDevices.forEach((device, index) => {
+                        const option = document.createElement('option');
+                        option.value = device.deviceId;
+                        let label = device.label || `摄像头 ${index + 1}`;
+                        
+                        if (label.toLowerCase().includes('rear') || 
+                            label.toLowerCase().includes('back') ||
+                            label.includes('后置')) {
+                            label += ' [后置]';
+                            option.selected = true;
+                        }
+                        
+                        option.text = label;
+                        select.appendChild(option);
+                    });
+                } else {
+                    select.innerHTML = '<option value="">未找到摄像头设备</option>';
+                }
             } catch (err) {
-                console.error('Camera list error:', err);
+                console.error('初始化摄像头列表失败:', err);
+                document.getElementById('camera-select').innerHTML = '<option value="">检测失败</option>';
+            }
+        }
+        
+        async function toggleCamera() {
+            if (isScanning) {
+                await stopCamera();
+            } else {
+                await startCamera();
             }
         }
         
         async function startCamera() {
-            hideError();
+            if (typeof ZXing === 'undefined' || !ZXing.BrowserQRCodeReader) {
+                showFloatingMessage('ZXing 库未加载，无法扫描', true);
+                return;
+            }
+            
             const deviceId = document.getElementById('camera-select').value;
             
             try {
                 document.getElementById('btn-start').disabled = true;
-                document.getElementById('btn-start').textContent = '⏳ 启动中...';
+                document.getElementById('scan-btn-text').textContent = '⏳ 启动中...';
                 
                 codeReader = new ZXing.BrowserQRCodeReader({
                     tryHarder: true,
                     formats: [ZXing.BarcodeFormat.QR_CODE]
                 });
                 
-                scanControls = codeReader.decodeFromVideoDevice(
+                scanControls = await codeReader.decodeFromVideoDevice(
                     deviceId || undefined,
-                    videoElement,
-                    (result, err) => {
+                    document.getElementById('video'),
+                    (result, error, controls) => {
                         if (result) {
                             handleScanResult(result.getText());
-                
-                            // 🔑 成功后立刻停止扫描，避免重复触发
-                            scanControls.stop();
-                            codeReader.reset();
                         }
                     }
                 );
                 
                 isScanning = true;
+                document.getElementById('scan-section-wrapper').classList.add('active');
+                document.getElementById('scan-btn-text').textContent = '⏹️ 停止扫描';
                 document.getElementById('btn-start').disabled = false;
-                document.getElementById('btn-start').textContent = '⏹️ 停止扫描';
-                document.getElementById('btn-start').onclick = stopCamera;
-                document.getElementById('btn-stop').disabled = false;
                 
-                showToast('📷 相机已启动');
+                showCameraStatus('扫描中... 请对准二维码', 'info');
+                showFloatingMessage('📷 摄像头已启动');
                 
             } catch (err) {
-                console.error('Start failed:', err);
-                showCameraError(err);
-                document.getElementById('btn-start').disabled = false;
-                document.getElementById('btn-start').textContent = '🚀 开始扫描';
+                console.error('启动扫描失败:', err);
+                let errorMsg = '启动失败';
+                if (err.name === 'NotAllowedError') errorMsg = '请允许摄像头权限';
+                else if (err.name === 'NotFoundError') errorMsg = '未找到摄像头';
+                else if (err.name === 'NotReadableError') errorMsg = '摄像头被占用';
+                else errorMsg = err.message;
+                
+                showCameraStatus('❌ ' + errorMsg, 'error');
+                showFloatingMessage('⚠️ ' + errorMsg, true);
+                await stopCamera();
             }
         }
         
-        function stopCamera() {
-            if (scanControls) {
+        async function stopCamera() {
+            isScanning = false;
+            lastDecodedText = '';
+            
+            if (scanControls && scanControls.stop) {
                 scanControls.stop();
-                scanControls = null;
             }
-            if (codeReader) {
+            if (codeReader && codeReader.reset) {
                 codeReader.reset();
-                codeReader = null;
             }
             
             const video = document.getElementById('video');
             if (video.srcObject) {
-                video.srcObject.getTracks().forEach(t => t.stop());
+                const stream = video.srcObject;
+                stream.getTracks().forEach(track => track.stop());
                 video.srcObject = null;
             }
             
-            isScanning = false;
+            scanControls = null;
+            codeReader = null;
+            
+            document.getElementById('scan-section-wrapper').classList.remove('active');
+            document.getElementById('scan-btn-text').textContent = '🚀 开始扫描';
             document.getElementById('btn-start').disabled = false;
-            document.getElementById('btn-start').textContent = '🚀 开始扫描';
-            document.getElementById('btn-start').onclick = startCamera;
-            document.getElementById('btn-stop').disabled = true;
-        }
-        
-        function showCameraError(err) {
-            const panel = document.getElementById('camera-error');
-            const text = document.getElementById('error-text');
             
-            let msg = '无法启动相机';
-            if (err.name === 'NotAllowedError') msg = '请允许相机权限（设置 > 隐私 > 相机）';
-            else if (err.name === 'NotFoundError') msg = '未找到摄像头设备';
-            else if (err.name === 'NotReadableError') msg = '摄像头被其他应用占用';
-            else msg = err.message;
+            showCameraStatus('扫描已停止', 'info');
+        }
+        
+        function handleScanResult(decodedText) {
+            const now = Date.now();
+            if (now - lastScanTime < 1000 && decodedText === lastDecodedText) {
+                return;
+            }
             
-            text.textContent = msg;
-            panel.classList.add('active');
+            lastScanTime = now;
+            lastDecodedText = decodedText;
+            
+            const scanWindow = document.getElementById('scan-window');
+            scanWindow.classList.add('scan-success');
+            setTimeout(() => scanWindow.classList.remove('scan-success'), 300);
+            
+            processChunkData(decodedText);
         }
         
-        function hideError() {
-            document.getElementById('camera-error').classList.remove('active');
+        async function processChunkData(data) {
+            try {
+                let trimmed = data.trim();
+                
+                if (!trimmed.startsWith('{') && trimmed.includes('{')) {
+                    trimmed = trimmed.substring(trimmed.indexOf('{'));
+                }
+                if (!trimmed.endsWith('}') && trimmed.includes('}')) {
+                    trimmed = trimmed.substring(0, trimmed.lastIndexOf('}') + 1);
+                }
+                
+                if (!trimmed.startsWith('{') || !trimmed.endsWith('}')) {
+                    throw new Error('数据格式错误');
+                }
+                
+                let chunk;
+                try {
+                    chunk = JSON.parse(trimmed);
+                } catch (e) {
+                    throw new Error('JSON解析失败');
+                }
+                
+                if (chunk.t === 'fn') {
+                    // 文件名二维码
+                    if (!chunk.f || !chunk.n || typeof chunk.s !== 'number' || !chunk.h) {
+                        throw new Error('文件名数据字段错误');
+                    }
+                    
+                    const crcData = { t: chunk.t, f: chunk.f, n: chunk.n, s: chunk.s, ts: chunk.ts, tc: chunk.tc };
+                    if (calculateCRC32(JSON.stringify(crcData)) !== chunk.h.toLowerCase()) {
+                        showFloatingMessage('❌ 文件名校验失败', true);
+                        return;
+                    }
+                    
+                    if (currentFileFingerprint && chunk.f !== currentFileFingerprint) {
+                        showFloatingMessage('⚠️ 文件指纹不匹配', true);
+                        return;
+                    }
+                    
+                    fileInfo = {
+                        fingerprint: chunk.f,
+                        filename: decodeFileName(chunk.n),
+                        totalChunks: chunk.tc,
+                        size: chunk.s
+                    };
+                    currentFileFingerprint = chunk.f;
+                    receivedFileName = fileInfo.filename;
+                    
+                    document.getElementById('fingerprint-display').style.display = 'block';
+                    document.getElementById('fingerprint-value').textContent = currentFileFingerprint;
+                    
+                    await saveProgress();
+                    updateStatus();
+                    showFloatingMessage('📄 文件名接收成功');
+                    showCameraStatus(`✅ 文件: ${receivedFileName}`, 'success');
+                    
+                } else {
+                    // 数据二维码
+                    if (typeof chunk.i !== 'number' || !chunk.t || !chunk.d || !chunk.f) {
+                        throw new Error('数据字段错误');
+                    }
+                    
+                    if (!currentFileFingerprint) {
+                        currentFileFingerprint = chunk.f;
+                        document.getElementById('fingerprint-display').style.display = 'block';
+                        document.getElementById('fingerprint-value').textContent = currentFileFingerprint;
+                    } else if (chunk.f !== currentFileFingerprint) {
+                        showFloatingMessage('⚠️ 不属于当前文件', true);
+                        return;
+                    }
+                    
+                    if (calculateCRC32(chunk.d) !== chunk.h.toLowerCase()) {
+                        showFloatingMessage(`❌ 分片 ${chunk.i+1} 校验失败`, true);
+                        return;
+                    }
+                    
+                    if (receivedChunks.has(chunk.i)) {
+                        showFloatingMessage(`⚠️ 分片 ${chunk.i+1} 已存在`);
+                        return;
+                    }
+                    
+                    if (!fileInfo) {
+                        fileInfo = { fingerprint: chunk.f, totalChunks: chunk.t, filename: '未知文件', size: 0 };
+                    }
+                    
+                    receivedChunks.set(chunk.i, chunk.d);
+                    await saveProgress();
+                    updateStatus();
+                    
+                    showFloatingMessage(`✅ 分片 ${chunk.i + 1}/${chunk.t}`);
+                    
+                    if (receivedChunks.size >= fileInfo.totalChunks && fileInfo.filename !== '未知文件') {
+                        document.getElementById('btn-reassemble').disabled = false;
+                        showFloatingMessage('🎉 接收完成！');
+                        setTimeout(() => stopCamera(), 500);
+                    }
+                }
+            } catch (err) {
+                console.error('处理失败:', err);
+                showFloatingMessage('❌ ' + err.message, true);
+            }
         }
         
-        // ==================== Image Queue System ====================
+        function showCameraStatus(message, type) {
+            const status = document.getElementById('camera-status');
+            status.textContent = message;
+            status.className = 'status-message show status-' + type;
+        }
+        
+        function showFloatingMessage(message, isError = false) {
+            const msg = document.createElement('div');
+            msg.className = 'floating-message ' + (isError ? 'floating-error' : '');
+            msg.textContent = message;
+            document.body.appendChild(msg);
+            setTimeout(() => msg.remove(), 1500);
+        }
+        
+        // ==================== Virtual Mode ====================
         function switchMode(mode) {
             currentMode = mode;
             document.querySelectorAll('.mode-btn').forEach((btn, idx) => {
@@ -967,11 +1160,7 @@
             document.getElementById('camera-section').classList.toggle('active', mode === 'camera');
             document.getElementById('virtual-section').classList.toggle('active', mode === 'virtual');
             
-            if (mode === 'camera') {
-                // Keep video ready
-            } else {
-                stopCamera();
-            }
+            if (mode === 'virtual') stopCamera();
         }
         
         function handleDragOver(e) { e.preventDefault(); e.currentTarget.classList.add('dragover'); }
@@ -980,13 +1169,11 @@
         function handleDrop(e) {
             e.preventDefault();
             e.currentTarget.classList.remove('dragover');
-            const files = Array.from(e.dataTransfer.files).filter(f => f.type.startsWith('image/'));
-            addToQueue(files);
+            addToQueue(Array.from(e.dataTransfer.files).filter(f => f.type.startsWith('image/')));
         }
         
         function handleFileSelect(e) {
-            const files = Array.from(e.target.files);
-            addToQueue(files);
+            addToQueue(Array.from(e.target.files));
             e.target.value = '';
         }
         
@@ -1006,22 +1193,11 @@
                     img.onerror = reject;
                     img.src = URL.createObjectURL(file);
                 });
-                
-                imageQueue.push({
-                    file,
-                    img,
-                    status: 'pending', // pending, completed, error
-                    result: null
-                });
+                imageQueue.push({ file, img, status: 'pending', result: null });
             }
-            
             updateQueueUI();
             showToast(`已添加 ${files.length} 张图片`);
-            
-            // Auto select first if none selected
-            if (currentImageIndex === -1 && imageQueue.length > 0) {
-                selectImage(0);
-            }
+            if (currentImageIndex === -1 && imageQueue.length > 0) selectImage(0);
         }
         
         function updateQueueUI() {
@@ -1036,10 +1212,7 @@
             imageQueue.forEach((item, idx) => {
                 const el = document.createElement('div');
                 el.className = `queue-item ${item.status} ${idx === currentImageIndex ? 'active' : ''}`;
-                el.innerHTML = `
-                    <img src="${item.img.src}">
-                    <div class="queue-badge">${idx + 1}</div>
-                `;
+                el.innerHTML = `<img src="${item.img.src}"><div class="queue-badge">${idx + 1}</div>`;
                 el.onclick = () => selectImage(idx);
                 container.appendChild(el);
             });
@@ -1047,12 +1220,8 @@
         
         function selectImage(index) {
             if (index < 0 || index >= imageQueue.length) return;
-            
             currentImageIndex = index;
-            const item = imageQueue[index];
-            
-            // Display image with correct aspect ratio
-            displayImage(item);
+            displayImage(imageQueue[index]);
             updateQueueUI();
         }
         
@@ -1061,58 +1230,34 @@
             const canvas = document.getElementById('preview-canvas');
             const ctx = canvas.getContext('2d');
             
-            // Get natural dimensions
             const img = item.img;
-            const naturalWidth = img.naturalWidth;
-            const naturalHeight = img.naturalHeight;
+            const scale = Math.min(800 / img.naturalWidth, 1);
+            const width = img.naturalWidth * scale;
+            const height = img.naturalHeight * scale;
             
-            // Calculate display size (max width 800, maintain aspect ratio)
-            const maxWidth = Math.min(800, container.clientWidth || 800);
-            const scale = Math.min(maxWidth / naturalWidth, 1);
-            const width = naturalWidth * scale;
-            const height = naturalHeight * scale;
-            
-            // Set canvas size
             canvas.width = width;
             canvas.height = height;
-            
-            // Draw image
             ctx.drawImage(img, 0, 0, width, height);
             
-            // Update container aspect ratio to match image
             container.style.aspectRatio = `${width} / ${height}`;
-            
-            // Show section
             document.getElementById('preview-section').classList.add('active');
             document.getElementById('current-file').textContent = item.file.name;
             document.getElementById('current-status').textContent = 
-                item.status === 'pending' ? '等待识别' : 
-                item.status === 'completed' ? '✓ 已识别' : '✗ 失败';
+                item.status === 'pending' ? '等待识别' : item.status === 'completed' ? '✓ 已识别' : '✗ 失败';
         }
         
         async function scanCurrent() {
             if (currentImageIndex === -1) return;
-            
             const item = imageQueue[currentImageIndex];
             document.getElementById('btn-scan').disabled = true;
             document.getElementById('btn-scan').textContent = '⏳ 识别中...';
             
             try {
-                const canvas = document.getElementById('preview-canvas');
-                const result = await tryDecode(canvas);
-                
+                const result = await tryDecode(document.getElementById('preview-canvas'));
                 if (result) {
-                    handleQRCode(result);
+                    processChunkData(result);
                     item.status = 'completed';
-                    item.result = result;
-                    showToast('✓ 识别成功');
-                    
-                    // Auto advance
-                    setTimeout(() => {
-                        if (currentImageIndex < imageQueue.length - 1) {
-                            selectImage(currentImageIndex + 1);
-                        }
-                    }, 500);
+                    setTimeout(() => { if (currentImageIndex < imageQueue.length - 1) selectImage(currentImageIndex + 1); }, 500);
                 } else {
                     item.status = 'error';
                     showToast('未识别到二维码');
@@ -1125,40 +1270,25 @@
             document.getElementById('btn-scan').disabled = false;
             document.getElementById('btn-scan').textContent = '🔍 识别此图';
             updateQueueUI();
-            displayImage(item); // Refresh status
+            displayImage(item);
         }
         
         function nextImage() {
-            if (currentImageIndex < imageQueue.length - 1) {
-                selectImage(currentImageIndex + 1);
-            }
+            if (currentImageIndex < imageQueue.length - 1) selectImage(currentImageIndex + 1);
         }
         
         function processQueue() {
-            // Process all pending images sequentially
             const pending = imageQueue.map((item, idx) => ({ item, idx })).filter(({ item }) => item.status === 'pending');
-            
-            if (pending.length === 0) {
-                showToast('没有待处理的图片');
-                return;
-            }
+            if (pending.length === 0) { showToast('没有待处理的图片'); return; }
             
             let index = 0;
             async function processNext() {
-                if (index >= pending.length) {
-                    showToast('队列处理完成');
-                    return;
-                }
-                
-                const { idx } = pending[index];
-                selectImage(idx);
+                if (index >= pending.length) { showToast('队列处理完成'); return; }
+                selectImage(pending[index].idx);
                 await scanCurrent();
                 index++;
-                
-                // Small delay between images
                 setTimeout(processNext, 300);
             }
-            
             processNext();
         }
         
@@ -1169,156 +1299,143 @@
             document.getElementById('preview-section').classList.remove('active');
         }
         
-        // ==================== Decoding ====================
         async function tryDecode(source) {
-            // ZXing try
             try {
-                const reader = new ZXing.BrowserQRCodeReader();
-                const result = await reader.decodeFromCanvas(source);
-                if (result) return result.getText();
+                if (typeof ZXing !== 'undefined') {
+                    const reader = new ZXing.BrowserQRCodeReader();
+                    const result = await reader.decodeFromCanvas(source);
+                    if (result) return result.getText();
+                }
             } catch (e) {}
             
-            // jsQR try with preprocessing
             const ctx = source.getContext('2d');
             const imageData = ctx.getImageData(0, 0, source.width, source.height);
-            
-            // Try original
             let code = jsQR(imageData.data, imageData.width, imageData.height, { inversionAttempts: "attemptBoth" });
             if (code) return code.data;
             
-            // Try preprocessed (grayscale)
-            const processed = preprocessImage(imageData);
-            code = jsQR(processed.data, processed.width, processed.height, { inversionAttempts: "attemptBoth" });
-            if (code) return code.data;
-            
-            return null;
-        }
-        
-        function preprocessImage(imageData) {
+            // 预处理重试
             const data = imageData.data;
             for (let i = 0; i < data.length; i += 4) {
                 const gray = 0.299 * data[i] + 0.587 * data[i + 1] + 0.114 * data[i + 2];
                 const val = gray > 128 ? 255 : 0;
                 data[i] = data[i + 1] = data[i + 2] = val;
             }
-            return imageData;
+            code = jsQR(data, imageData.width, imageData.height, { inversionAttempts: "attemptBoth" });
+            return code ? code.data : null;
         }
         
-        // ==================== Data Handling ====================
-        function handleScanResult(text) {
-            handleQRCode(text);
-            // Visual feedback
-            const frame = document.querySelector('.scan-frame');
-            frame.style.borderColor = 'var(--success)';
-            setTimeout(() => frame.style.borderColor = '', 300);
-        }
-        
-        function handleQRCode(text) {
-            try {
-                const data = JSON.parse(text);
-                
-                if (data.t === 'fn') {
-                    fileInfo = {
-                        fingerprint: data.f,
-                        filename: atob(data.n),
-                        totalChunks: data.tc,
-                        size: data.s
-                    };
-                    saveProgress();
-                    showToast(`文件: ${fileInfo.filename}`);
-                    updateStatus();
-                } else if (data.i !== undefined && data.t && fileInfo && fileInfo.fingerprint === data.f) {
-                    if (!receivedChunks.has(data.i)) {
-                        receivedChunks.set(data.i, data.d);
-                        updateStatus();
-                        saveProgress();
-                        
-                        if (receivedChunks.size === fileInfo.totalChunks) {
-                            document.getElementById('btn-reassemble').disabled = false;
-                            showToast('🎉 接收完成！');
-                        }
-                    }
-                }
-            } catch (e) {
-                console.error('Parse error:', e);
-            }
-        }
-        
+        // ==================== Storage & File ====================
         function updateStatus() {
             if (!fileInfo) return;
-            const pct = Math.round((receivedChunks.size / fileInfo.totalChunks) * 100);
+            const totalReceived = receivedChunks.size;
+            const totalToReceive = fileInfo.totalChunks;
+            const pct = totalToReceive > 0 ? Math.round((totalReceived / totalToReceive) * 100) : 0;
+            
             document.getElementById('progress-fill').style.width = pct + '%';
             document.getElementById('progress-text').textContent = pct + '%';
-            document.getElementById('status-text').textContent = 
-                `已接收: ${receivedChunks.size}/${fileInfo.totalChunks}`;
+            document.getElementById('status-text').textContent = `${receivedFileName || '未命名'}: ${totalReceived}/${totalToReceive}`;
             
-            // Grid
             const grid = document.getElementById('chunks-grid');
             grid.innerHTML = '';
             for (let i = 0; i < fileInfo.totalChunks; i++) {
                 const cell = document.createElement('div');
-                cell.className = 'chunk-cell';
-                if (receivedChunks.has(i)) cell.classList.add('filled');
+                cell.className = 'chunk-cell' + (receivedChunks.has(i) ? ' filled' : '');
                 cell.textContent = i + 1;
+                grid.appendChild(cell);
+            }
+            if (fileInfo && fileInfo.filename !== '未知文件') {
+                const cell = document.createElement('div');
+                cell.className = 'chunk-cell filename';
+                cell.textContent = '📄';
                 grid.appendChild(cell);
             }
         }
         
-        // ==================== Storage ====================
         async function saveProgress() {
-            await localforage.setItem('chunks', Array.from(receivedChunks.entries()));
-            await localforage.setItem('info', fileInfo);
+            try {
+                const store = localforage.createInstance({ name: 'qrcode-receiver-v2' });
+                await store.setItem('chunks', Array.from(receivedChunks.entries()));
+                await store.setItem('fileInfo', fileInfo);
+                await store.setItem('fingerprint', currentFileFingerprint);
+                await store.setItem('filename', receivedFileName);
+            } catch (err) { console.error('保存失败:', err); }
         }
         
         async function loadProgress() {
-            const chunks = await localforage.getItem('chunks');
-            const info = await localforage.getItem('info');
-            if (info) {
-                fileInfo = info;
-                receivedChunks = new Map(chunks || []);
-                updateStatus();
-                if (receivedChunks.size === fileInfo.totalChunks) {
-                    document.getElementById('btn-reassemble').disabled = false;
+            try {
+                const store = localforage.createInstance({ name: 'qrcode-receiver-v2' });
+                const chunks = await store.getItem('chunks');
+                const info = await store.getItem('fileInfo');
+                const fp = await store.getItem('fingerprint');
+                const fn = await store.getItem('filename');
+                
+                if (info) {
+                    fileInfo = info;
+                    receivedChunks = new Map(chunks || []);
+                    currentFileFingerprint = fp || info.fingerprint;
+                    receivedFileName = fn || info.filename;
+                    
+                    document.getElementById('fingerprint-display').style.display = 'block';
+                    document.getElementById('fingerprint-value').textContent = currentFileFingerprint;
+                    updateStatus();
+                    if (receivedChunks.size >= fileInfo.totalChunks) {
+                        document.getElementById('btn-reassemble').disabled = false;
+                    }
                 }
-            }
+            } catch (err) { console.error('加载失败:', err); }
         }
         
-        // ==================== File Operations ====================
         async function reassembleFile() {
-            if (!fileInfo || receivedChunks.size !== fileInfo.totalChunks) return;
+            if (!fileInfo || receivedChunks.size < fileInfo.totalChunks) return;
             
             try {
-                const sorted = [];
-                for (let i = 0; i < fileInfo.totalChunks; i++) sorted.push(receivedChunks.get(i));
+                document.getElementById('btn-reassemble').disabled = true;
+                document.getElementById('btn-reassemble').textContent = '⏳ 重组中...';
                 
-                const binary = atob(sorted.join(''));
+                const sorted = [];
+                for (let i = 0; i < fileInfo.totalChunks; i++) {
+                    const data = receivedChunks.get(i);
+                    if (!data) throw new Error(`缺少分片 ${i + 1}`);
+                    sorted.push(data);
+                }
+                
+                const combinedBase64 = sorted.join('');
+                let binary = atob(combinedBase64);
                 const bytes = new Uint8Array(binary.length);
                 for (let i = 0; i < binary.length; i++) bytes[i] = binary.charCodeAt(i);
                 
-                const decompressed = pako.inflate(bytes);
-                const blob = new Blob([decompressed]);
+                let decompressed;
+                try { decompressed = pako.inflate(bytes); } 
+                catch (e) { decompressed = bytes; }
                 
-                await localforage.setItem('file', blob);
-                await localforage.setItem('fileInfo', fileInfo);
+                const blob = new Blob([decompressed]);
+                const store = localforage.createInstance({ name: 'qrcode-receiver-v2' });
+                await store.setItem('fileBlob', blob);
                 
                 document.getElementById('btn-download').disabled = false;
                 showToast('✓ 重组完成');
             } catch (err) {
                 showToast('重组失败: ' + err.message);
+                document.getElementById('btn-reassemble').disabled = false;
+            } finally {
+                document.getElementById('btn-reassemble').textContent = '🧩 重组';
             }
         }
         
         async function downloadFile() {
-            const blob = await localforage.getItem('file');
-            const info = await localforage.getItem('fileInfo');
-            if (!blob || !info) return;
-            
-            const url = URL.createObjectURL(blob);
-            const a = document.createElement('a');
-            a.href = url;
-            a.download = info.filename;
-            a.click();
-            URL.revokeObjectURL(url);
+            try {
+                const store = localforage.createInstance({ name: 'qrcode-receiver-v2' });
+                const blob = await store.getItem('fileBlob');
+                if (!blob || !fileInfo) { showToast('没有可下载的文件'); return; }
+                
+                const url = URL.createObjectURL(blob);
+                const a = document.createElement('a');
+                a.href = url;
+                a.download = fileInfo.filename;
+                a.click();
+                URL.revokeObjectURL(url);
+                showToast('⬇️ 下载已开始');
+            } catch (err) { showToast('下载失败: ' + err.message); }
         }
         
         function showToast(msg) {
@@ -1328,7 +1445,7 @@
             setTimeout(() => toast.classList.remove('show'), 3000);
         }
         
-        window.addEventListener('beforeunload', () => stopCamera());
+        window.addEventListener('beforeunload', () => { if (isScanning) stopCamera(); });
     </script>
 </body>
 </html>
