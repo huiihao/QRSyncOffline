@@ -185,6 +185,54 @@
         .footer a:hover {
             text-decoration: underline;
         }
+
+        /* GitHub 图标样式 */
+        .github-link {
+            position: fixed;
+            top: 30px;
+            right: 30px;
+            z-index: 1000;
+            width: 48px;
+            height: 48px;
+            background: var(--bg-card);
+            backdrop-filter: var(--glass-blur);
+            -webkit-backdrop-filter: var(--glass-blur);
+            border: 1px solid var(--border-glass);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: var(--text-primary);
+            text-decoration: none;
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+        
+        .github-link:hover {
+            transform: translateY(-3px) scale(1.05);
+            border-color: rgba(0, 212, 255, 0.3);
+            box-shadow: 0 8px 25px rgba(0, 212, 255, 0.2);
+            background: rgba(30, 30, 45, 0.8);
+        }
+        
+        .github-icon {
+            width: 24px;
+            height: 24px;
+            fill: currentColor;
+        }
+        
+        @media (max-width: 768px) {
+            .github-link {
+                top: 20px;
+                right: 20px;
+                width: 44px;
+                height: 44px;
+            }
+            
+            .github-icon {
+                width: 22px;
+                height: 22px;
+            }
+        }
     </style>
 </head>
 <body>
